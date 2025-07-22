@@ -6,9 +6,13 @@ import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  // Use only for devlopment,calls every useEffect api 2 times to check the app is  giving the correct response
+  // <React.StrictMode>
+  //   <App />
+  // </React.StrictMode>
+ 
+    <App />//for production
+ 
 );
 
 // If you want to start measuring performance in your app, pass a function

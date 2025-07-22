@@ -14,6 +14,8 @@ import ProductForm from "./components/Products/ProductForm.js";
 import InvoiceList from "./components/Invoices/InvoiceList.js";
 import InvoiceForm from "./components/Invoices/InvoiceForm.js";
 import InvoiceDetail from "./components/Invoices/InvoiceDetail.js";
+import InvoiceSlip from "./components/Invoices/InvoiceSlip.js"
+import InvoiceGenrator from "./components/Invoices/InvoiceGenrator.js"
 
 
 function App() {
@@ -52,6 +54,8 @@ function App() {
           <Route path="/products" element={<ProductList />}></Route>
           <Route path="/products/new" element={<ProductForm />}></Route>
           <Route path="/invoices" element={<InvoiceList />}></Route>
+          <Route path="/InvoiceSlip" element={<InvoiceSlip />}></Route>
+          <Route path="customers/:id/invoices" element={<InvoiceGenrator />}></Route>
           <Route path="/invoices/new" element={<InvoiceForm />}></Route>
           <Route path="/invoices/:id" element={<InvoiceDetail />}></Route>
           {/* <Route  path="/" render={()=><Typography variant="h4">Welcome to GST Billing</Typography>} element={<InvoiceDetail/>}></Route> */}

@@ -68,3 +68,135 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+--------------
+InvoiceSlip.js
+import React from 'react';
+import {
+  Box,
+  Typography,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  Divider,
+} from '@mui/material';
+
+const InvoiceSlip = ({ invoiceData }) => {
+  const subtotal =
+    parseFloat(invoiceData.total_amount) -
+    parseFloat(invoiceData.cgst) -
+    parseFloat(invoiceData.sgst);
+
+  return (
+    <Paper elevation={3} sx={{ p: 4, maxWidth: 900, margin: '0 auto', fontFamily: 'Arial' }}>
+      <Box textAlign="center" mb={3}>
+        <Typography variant="h4" fontWeight="bold" color="goldenrod">INVOICE</Typography>
+        <Typography variant="h5" color="primary" fontWeight="bold">UniformSoftware</Typography>
+        <Typography variant="body2">
+          Your Business Name<br />
+          PO Box XXXX<br />
+          Address, City, State<br />
+          Phone#<br />
+          GST #: XXXXXXXXXX
+        </Typography>
+      </Box>
+
+      <Grid container spacing={2} mb={2}>
+        <Grid item xs={6}>
+          <Typography variant="subtitle2"><strong>Bill To:</strong></Typography>
+          <Typography variant="body2">Customer ID: {invoiceData.customer_id}</Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="subtitle2"><strong>Service Location:</strong></Typography>
+          <Typography variant="body2">--</Typography>
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2} mb={2}>
+        <Grid item xs={6}>
+          <Typography variant="body2"><strong>Invoice #:</strong> {invoiceData.invoice_number}</Typography>
+        </Grid>
+        <Grid item xs={6} textAlign="right">
+          <Typography variant="body2"><strong>Date:</strong> {invoiceData.invoice_date}</Typography>
+        </Grid>
+      </Grid>
+
+      <Divider sx={{ mb: 2 }} />
+
+      <Table size="small" sx={{ mb: 3 }}>
+        <TableHead sx={{ backgroundColor: '#FFF8DC' }}>
+          <TableRow>
+            <TableCell>Item #</TableCell>
+            <TableCell>Description</TableCell>
+            <TableCell align="center">Qty</TableCell>
+            <TableCell align="right">Price</TableCell>
+            <TableCell align="right">GST</TableCell>
+            <TableCell align="right">Line Total</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {/* Replace with dynamic items in future */}
+          <TableRow>
+            <TableCell>1</TableCell>
+            <TableCell>Sample Product</TableCell>
+            <TableCell align="center">2</TableCell>
+            <TableCell align="right">500.00</TableCell>
+            <TableCell align="right">{invoiceData.cgst}</TableCell>
+            <TableCell align="right">{invoiceData.total_amount}</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+
+      <Box textAlign="right">
+        <Typography variant="body2">Subtotal: ₹{subtotal.toFixed(2)}</Typography>
+        <Typography variant="body2">CGST: ₹{invoiceData.cgst}</Typography>
+        <Typography variant="body2">SGST: ₹{invoiceData.sgst}</Typography>
+        <Typography variant="body2">IGST: ₹{invoiceData.igst}</Typography>
+        <Typography variant="body1" fontWeight="bold">TOTAL: ₹{invoiceData.total_amount}</Typography>
+      </Box>
+
+      <Box mt={3}>
+        <Typography variant="subtitle2"><strong>NOTES:</strong></Typography>
+        <Box border={1} borderColor="grey.300" p={2} minHeight={80}>
+          <Typography variant="body2">--</Typography>
+        </Box>
+      </Box>
+
+      <Box mt={4} textAlign="center">
+        <Typography variant="body2" fontStyle="italic">
+          THANK YOU FOR YOUR BUSINESS!
+        </Typography>
+      </Box>
+    </Paper>
+  );
+};
+
+export default InvoiceSlip;
+
+
+InvoiceGenrator.js
+import React from 'react';
+import InvoiceSlip from './InvoiceSlip';
+
+const invoiceData = {
+  id: 1,
+  customer_id: 2,
+  invoice_number: "INV-1752738250",
+  invoice_date: "2025-06-24",
+  total_amount: "1120.00",
+  cgst: "60.00",
+  sgst: "60.00",
+  igst: "0.00"
+};
+
+function App() {
+  return <InvoiceSlip invoiceData={invoiceData} />;
+}
+
+export default App;
