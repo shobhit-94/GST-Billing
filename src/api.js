@@ -24,7 +24,7 @@ const getProducts = () => {
 const createProduct = (data) => {
   return axios.post(`${API_URL}/products`, data);
 };
-const getInvoices = () => {
+const getInvoices =  () => {
   return axios.get(`${API_URL}/invoices`);
 };
 const getallInvoices = (id) => {
