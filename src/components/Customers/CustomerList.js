@@ -84,7 +84,7 @@ function CustomerList() {
                   <Button
                     variant="contained"
                     color="primary"
-                    href={`/customers/${customer.id}}`}
+                    href={`/customers/view/${customer.id}}`}
                     sx={{ mt: 0, width: 30, height: 30, fontSize: 10 }}
                   >
                     View

@@ -5,7 +5,7 @@ const API_URL = "http://localhost:8000/api/v1";
 const getCustomers = () => {
   return axios.get(`${API_URL}/customers`);
 };
-const getCustomerdetail = (id) => {
+const getCustomerdetail = async(id) => {
   return axios.get(`${API_URL}/customers/${id}`);
 };
 const UpdateCustomerdetail = (data, id) => {
@@ -37,6 +37,15 @@ const createInvoice = (data) => {
 const getInvoice = (id) => {
   return axios.get(`${API_URL}/invoices/${id}`);
 };
+const importcustomer=(formdata)=>{
+  return axios.post(`${API_URL}/import/customers`,formdata)
+}
+const exportcustomerexcel=()=>{
+  return axios.get(`${API_URL}/export/customers-excel`)
+}
+const exportcustomerpdf=()=>{
+  return axios.get(`${API_URL}/export/customers-pdf`)
+}
 
 /*
 
@@ -59,5 +68,8 @@ export {
   getInvoices,
   createInvoice,
   getInvoice,
-  getallInvoices
+  getallInvoices,
+  importcustomer,
+  exportcustomerexcel,
+  exportcustomerpdf
 };

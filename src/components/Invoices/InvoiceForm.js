@@ -67,14 +67,14 @@ function InvoiceForm() {
   //in the existing items list
   const addItem = () => {
     const updatedItems = [...formData.items, { product_id: "", quantity: "" }]; //create an empty
-    //item in the end
+    //item in the end and copying all previous  Items also
 
     setFormData({
       ...formData, //keep all the formdat same
 
       items: updatedItems,
     }); //replace the items list with new updated list with empty
-    //new updated items which contain empty item in the end
+    //new updated items which contain empty item in the end and also all the previous items
   };
 
   //THis function removeitems from alist of items if there's are
@@ -132,6 +132,7 @@ function InvoiceForm() {
         {customers.map((customer) => (
           <MenuItem key={customer.id} value={customer.id}>
             {customer.name}
+            {/* CUstomer name to bocx me dikhega lekin usi value customer.id hogi  */}
           </MenuItem>
         ))}
       </TextField>
