@@ -29,7 +29,7 @@ function EditCustomerForm() {
     getCustomerdetail(id)
       .then((response) => {
         console.log("Fetched customer:", response.data);
-        setFormData(response.data);
+        setFormData(response.data.data);
       })
       .catch((error) =>
         console.error(
@@ -63,7 +63,7 @@ function EditCustomerForm() {
         fullWidth
         label="Name"
         name="name"
-        value={formdata.name}
+        value={formdata.name || ""}
         onChange={handleChange}
         required
         margin="normal"
@@ -73,7 +73,7 @@ function EditCustomerForm() {
         fullWidth
         label="Email"
         name="email"
-        value={formdata.email}
+        value={formdata.email || ""}
         onChange={handleChange}
         required
         margin="normal"
@@ -83,7 +83,7 @@ function EditCustomerForm() {
         fullWidth
         label="Phone"
         name="phone"
-        value={formdata.phone}
+        value={formdata.phone || ""}
         onChange={handleChange}
         required
         margin="normal"
@@ -93,7 +93,7 @@ function EditCustomerForm() {
         fullWidth
         label="GSTIN"
         name="gstin"
-        value={formdata.gstin}
+        value={formdata.gstin || ""}
         onChange={handleChange}
         required
         margin="normal"
@@ -103,7 +103,7 @@ function EditCustomerForm() {
         fullWidth
         label="ADDRESS"
         name="address"
-        value={formdata.address}
+        value={formdata.address || ""}
         onChange={handleChange}
         required
         margin="normal"
@@ -114,7 +114,7 @@ function EditCustomerForm() {
         select
         label="Customer Type"
         name="customer_type"
-        value={formdata.customer_type}
+        value={formdata.customer_type || ""}
         onChange={handleChange}
         required
         margin="normal"

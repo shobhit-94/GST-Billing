@@ -26,7 +26,10 @@ const GetAllInvoice = () => {
   }, []);
   useEffect(() => {
     const fetchCutomer = async () => {
+        if (!selectedCustomerId) return; // Skip if no customer selected
+//This condition prevent the render of useEffect hooks when selectedCustomerId is not selected         
       // console.log("selectedCustomerId in getcustomerdetails = ",selectedCustomerId)
+       console.log("selectedCustomerId  inside  fetchCutomer= ",selectedCustomerId)
       await getCustomerdetail(selectedCustomerId)
         .then((response) => {
           setCustomerDetails(response.data);
@@ -63,6 +66,7 @@ const GetAllInvoice = () => {
         value={selectedCustomerId||''}//(removes most of the errors) Ensures never undefined(har form me use kero)
         onChange={handlechange}
         required
+
         margin="normal"
       >
         {customers.map((customer) => (

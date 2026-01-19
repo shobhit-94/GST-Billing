@@ -22,7 +22,9 @@ function InvoiceForm() {
   });
 
   const navigate = useNavigate();
-
+  useEffect(() => {
+    console.log("products = ", products);
+  }, [products]);
   useEffect(() => {
     getCustomers()
       .then((response) => setCustomers(response.data))
@@ -31,7 +33,10 @@ function InvoiceForm() {
         console.log("error in getCustomers InvoiceForm.js = ", error);
       });
     getProducts()
-      .then((response) => setProducts(response.data))
+      .then((response) => {
+        console.log(response)
+        setProducts(response.data.data);
+      })
       .catch((error) => {
         // throw new Error("error in getPRoducts InvoiceForm.js = ", error);
         console.log("error in getProducts InvoiceForm.js = ", error);
@@ -42,8 +47,7 @@ function InvoiceForm() {
   //2.)can also add a newItems in the list
   const handleChange = (e, index) => {
     // if (index !== undefined) {
-    if (e.target.name === "product_id" || e.target.name === "quantity"){
-
+    if (e.target.name === "product_id" || e.target.name === "quantity") {
       //if we are updating an items in the list
       const newItems = [...formData.items]; //copt the items list
       newItems[index][e.target.name] = e.target.value; //update the correct field
@@ -53,15 +57,15 @@ function InvoiceForm() {
         items: newItems, //update items list with newitems list
       });
     } else {
-        console.log(e.target.value)
+      console.log(e.target.value);
       //If we are adding  a new field in the end of the list
       setFormData({
         ...formData, //Keep the rest of the list same
         [e.target.name]: e.target.value,
       }); //add the value in the fild
     }
-// seeformdata()  
-};
+    // seeformdata()
+  };
 
   //the addItems() will add a newitem with product_id and quantity to the end
   //in the existing items list
@@ -103,8 +107,8 @@ function InvoiceForm() {
       quantities: formData.items.map((item) => item.quantity),
     };
     console.log("hello here", payload);
-    console.log(payload.products)
-    payload.products.map((product)=>console.log(product))
+    console.log(payload.products);
+    payload.products.map((product) => console.log(product));
     createInvoice(payload)
       .then(() => navigate("/invoices"))
       .catch((error) => {
@@ -112,12 +116,16 @@ function InvoiceForm() {
         console.log("error in CustomerForm.js = ", error);
       });
   };
-  const seeformdata=()=>{
-    console.log("formData = ",formData)
-  }
+  const seeformdata = () => {
+    console.log("formData = ", formData);
+  };
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 600 }}>
+      <Typography variant="h6" fontSize="24px">
+        Create invoice
+      </Typography>
+
       <Typography variant="h5" gutterBottom></Typography>
       <TextField
         fullWidth
@@ -159,11 +167,21 @@ function InvoiceForm() {
             required
             sx={{ flex: 1 }}
           >
-            {products.map((product) => (
-              <MenuItem key={product.id} value={product.id}>
-                {product.name}(Rs{product.price})
-              </MenuItem>
-            ))}
+            {/* Ensures that products is always an array:
+                The main problem with using products.length !== 0 alone is that it assumes products is always an array. If products is ever set to something that isn't an array (like undefined, null, or an object), checking products.length !== 0 will break because those types do not have a .length property.
+                For example:
+                let products = null;
+                console.log(products.length); // Throws an error: Cannot read property 'length' of null
+                If you use Array.isArray(products), you're explicitly checking if products is an array. This ensures you can safely call .length and .map() without running into type errors.*/}
+            {Array.isArray(products) && products.length !== 0 ? (
+              products.map((product) => (
+                <MenuItem key={product.id} value={product.id}>
+                  {product.name}(Rs{product.price})
+                </MenuItem>
+              ))
+            ) : (
+              <MenuItem>No products </MenuItem>
+            )}
           </TextField>
           <TextField
             label="Quantity"

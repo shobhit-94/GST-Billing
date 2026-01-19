@@ -11,13 +11,15 @@ function CustomerViewForm() {
 
   // const cutmerdetail = () => {
   // const[customer,setCustomer]=useState([])
-  const [formdata, setFormData] = useState([]);
+  const [formdata, setFormData] = useState({});
 
   useEffect(() => {
-    getCustomerdetail(id)
+    const fetch_Customer_details=()=>{
+        console.log("Fetching details for customer ID:", id);
+        getCustomerdetail(id)
       .then((response) => {
-        console.log("Fetched customer:", response.data);
-        setFormData(response.data);
+        console.log("Fetched customer:", response.data.data);
+        setFormData(response.data.data);
       })
       .catch((error) =>
         console.error(
@@ -25,6 +27,8 @@ function CustomerViewForm() {
           error
         )
       );
+    }
+    fetch_Customer_details()
   }, [id]);
   // }
 
@@ -106,8 +110,8 @@ function CustomerViewForm() {
         type="submit"
         // onClick={descision}
         variant="contained"
-        color="inherit"
-        sx={{ mt: 2 }}
+        // color="inherit"
+        sx={{ mt: 2 ,backgroundColor:'blue',color:'white'}}
       >
         Go Back
       </Button>

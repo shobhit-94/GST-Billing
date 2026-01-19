@@ -26,6 +26,7 @@ function ProductForm() {
   };
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 600 }}>
+      <Typography variant="h6" fontSize="24px" >Add Products</Typography>
       <Typography variant="h6" gutterBottom></Typography>
       <TextField
         fullWidth

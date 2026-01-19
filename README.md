@@ -536,3 +536,294 @@ function CustomerExport() {
 }
 
 export default CustomerExport;
+------------------------------------------
+ $table->foreignId('dealer_id')->constrained('registerations')->onDelete('cascade');
+
+-----------
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import React, { useState } from "react";
+import { Register } from "../api.js";
+import { useNavigate } from "react-router-dom";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
+function Registerartion() {
+  const navigate = useNavigate();
+  const [formdata, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirm_password: "",
+  });
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formdata, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("formdata before submitting = ", formdata);
+    Register(formdata)
+      .then(() => {
+        navigate("/customers");
+      })
+      .catch((error) => {
+        console.error(`Error in registering dealer: ${error}`);
+      });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  return (
+    <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 600 }}>
+      <Typography variant="h6">Register</Typography>
+
+      <TextField
+        fullWidth
+        label="Name"
+        name="name"
+        value={formdata.name}
+        onChange={handleChange}
+        required
+        margin="normal"
+      />
+
+      <TextField
+        fullWidth
+        label="Email"
+        name="email"
+        value={formdata.email}
+        onChange={handleChange}
+        required
+        margin="normal"
+      />
+
+      <TextField
+        fullWidth
+        label="Password"
+        name="password"
+        value={formdata.password}
+        onChange={handleChange}
+        type={showPassword ? "text" : "password"}
+        required
+        margin="normal"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={togglePasswordVisibility} edge="end">
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+
+      <TextField
+        fullWidth
+        label="Confirm Password"
+        name="confirm_password"
+        value={formdata.confirm_password}
+        onChange={handleChange}
+        type={showPassword ? "text" : "password"}
+        required
+        margin="normal"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={togglePasswordVisibility} edge="end">
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+
+      <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+        Register
+      </Button>
+    </Box>
+  );
+}
+
+export default Registerartion;
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Configuring auth.php for Your Registeration Model
+Based on your error and the need to use the Registeration model for authentication, here's how to modify your auth.php configuration:
+
+Updated auth.php Configuration
+php
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Defaults
+    |--------------------------------------------------------------------------
+    */
+    'defaults' => [
+        'guard' => 'api', // Changed to 'api' as your primary guard
+        'passwords' => 'registerations', // Changed to match your provider
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Guards
+    |--------------------------------------------------------------------------
+    */
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+
+        'api' => [
+            'driver' => 'sanctum', // Using Sanctum for API auth
+            'provider' => 'registerations', // Points to our new provider
+            'hash' => false,
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | User Providers
+    |--------------------------------------------------------------------------
+    */
+    'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
+        ],
+
+        'registerations' => [ // New provider for dealers
+            'driver' => 'eloquent',
+            'model' => App\Models\Registeration::class,
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Resetting Passwords
+    |--------------------------------------------------------------------------
+    */
+    'passwords' => [
+        'users' => [
+            'provider' => 'users',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        'registerations' => [ // Password reset for dealers
+            'provider' => 'registerations',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+    ],
+
+    'password_timeout' => 10800,
+];
+Key Changes Made:
+Changed Default Guard:
+
+Set 'guard' => 'api' as default since you're building an API
+
+This ensures API routes use Sanctum by default
+
+Added API Guard Configuration:
+
+Configured the api guard to use Sanctum driver
+
+Pointed it to the registerations provider
+
+Created New Provider:
+
+Added registerations provider that uses your Registeration model
+
+This tells Laravel where to find dealer/user records
+
+Password Reset Configuration:
+
+Added password reset settings for dealers
+
+Uses same password_resets table but different provider
+
+Additional Required Changes
+For this to work completely, ensure you've:
+
+Updated your Registeration model as shown in previous answers:
+
+Extends Authenticatable
+
+Uses HasApiTokens trait
+
+Configured your routes to use the correct middleware:
+
+php
+Route::middleware('auth:sanctum')->group(function() {
+    // Your protected routes here
+});
+Login/Register endpoints return proper Sanctum tokens:
+
+php
+// In your login controller
+$token = $user->createToken('auth_token')->plainTextToken;
+return response()->json(['token' => $token]);
+Why This Configuration Works
+Clear Separation:
+
+Web authentication (sessions) uses the users provider
+
+API authentication (tokens) uses the registerations provider
+
+Proper Sanctum Integration:
+
+The sanctum driver handles token authentication
+
+The registerations provider knows where to find user data
+
+Flexibility:
+
+You can still use traditional web auth if needed
+
+API routes are properly protected with tokens
+
+This configuration should resolve your authentication errors and provide a solid foundation for your dealer-based GST billing system.
+
+--------------------------------------------------------------------------------------------------------------public function index()
+{
+    // Get the authenticated dealer (Registeration model instance)
+    $dealer = auth()->user();
+    
+    // Check if authentication was successful
+    if (!$dealer) {
+        return response()->json([
+            'message' => 'Unauthorized - Please login first',
+            'success' => false
+        ], 401);
+    }
+
+    // Get customers only for this specific dealer
+    $customers = Customer::where('dealer_id', $dealer->id)->get();
+    
+    // Return JSON response with customers
+    return response()->json([
+        'success' => true,
+        'data' => $customers,
+        'dealer' => $dealer->only(['id', 'name', 'email']) // Optional: include dealer info
+    ], 200);
+}
